@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Poker Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen">
+            <div class="login-box">
+                <h1>🃏 Online Poker</h1>
+                <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+                
+                <div class="button-group">
+                    <button id="createRoomBtn" class="primary-btn">Create Room</button>
+                    <button id="showJoinBtn" class="secondary-btn">Join Room</button>
+                </div>
+                
+                <!-- Create Room Options -->
+                <div id="createRoomOptions" class="room-options hidden">
+                    <h3>Create New Room</h3>
+                    <label for="maxPlayersSelect">Number of Players:</label>
+                    <select id="maxPlayersSelect">
+                        <option value="2">2 Players</option>
+                        <option value="3">3 Players</option>
+                        <option value="4">4 Players</option>
+                        <option value="5">5 Players</option>
+                        <option value="6">6 Players</option>
+                        <option value="7">7 Players</option>
+                        <option value="8">8 Players</option>
+                    </select>
+                    <button id="confirmCreateBtn" class="confirm-btn">Create Room</button>
+                    <button id="cancelCreateBtn" class="cancel-btn">Cancel</button>
+                </div>
+                
+                <!-- Join Room Options -->
+                <div id="joinRoomOptions" class="room-options hidden">
+                    <h3>Join Existing Room</h3>
+                    <input type="text" id="roomCodeInput" placeholder="Enter 6-digit room code" maxlength="6">
+                    <button id="confirmJoinBtn" class="confirm-btn">Join Room</button>
+                    <button id="cancelJoinBtn" class="cancel-btn">Cancel</button>
+                </div>
+                
+                <div id="loginError" class="error"></div>
+            </div>
+
+            <!-- Global Chat -->
+            <div class="global-chat-box">
+                <div class="global-chat-header">
+                    <span>🌐 Global Chat</span>
+                    <span id="globalOnlineCount" class="online-count">● 0 online</span>
+                </div>
+                <div id="globalChatMessages" class="global-chat-messages"></div>
+                <div class="global-chat-input-row">
+                    <input type="text" id="globalChatInput" placeholder="Say something to everyone..." maxlength="200">
+                    <button id="globalSendBtn" class="global-send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen hidden">
+            <div class="game-header">
+                <div class="game-info">
+                    <h2>Texas Hold'em Poker</h2>
+                    <p>Room Code: <span id="gameCode"></span></p>
+                </div>
+                <button id="leaveGameBtn" class="leave-btn">Leave Game</button>
+            </div>
+
+            <div class="poker-table">
+                <!-- Community Cards -->
+                <div class="community-cards">
+                    <h3>Community Cards</h3>
+                    <div id="communityCards" class="cards-display">
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                    </div>
+                    <div class="pot-display">
+                        Pot: $<span id="potAmount">0</span>
+                    </div>
+                </div>
+
+                <!-- Players Display -->
+                <div id="playersContainer" class="players-container">
+                    <!-- Players will be dynamically added here -->
+                </div>
+
+                <!-- Current Player's Hand -->
+                <div class="player-hand">
+                    <h3>Your Hand</h3>
+                    <div id="playerCards" class="cards-display">
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                    </div>
+                    <div class="chips-display">
+                        Your Chips: $<span id="playerChips">1000</span>
+                    </div>
+                </div>
+
+                <!-- Action Panel -->
+                <div id="actionPanel" class="action-panel hidden">
+                    <div class="bet-controls">
+                        <input type="range" id="betSlider" min="0" max="1000" value="0" step="10">
+                        <span id="betAmount">$0</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="foldBtn" class="action-btn fold-btn">Fold</button>
+                        <button id="checkBtn" class="action-btn check-btn">Check</button>
+                        <button id="callBtn" class="action-btn call-btn">Call $<span id="callAmount">0</span></button>
+                        <button id="raiseBtn" class="action-btn raise-btn">Raise</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Log and Chat Side by Side -->
+            <div class="info-panels">
+                <!-- Game Log -->
+                <div class="game-log">
+                    <h3>Game Log</h3>
+                    <div id="logContainer"></div>
+                </div>
+
+                <!-- Chat Panel -->
+                <div class="chat-panel">
+                    <h3>Chat</h3>
+                    <div id="chatContainer" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="Type a message..." maxlength="200">
+                        <button id="sendChatBtn" class="send-chat-btn">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waiting for Players -->
+            <div id="waitingScreen" class="waiting-screen">
+                <h2>Waiting for players...</h2>
+                <p>Players: <span id="playerCount">1/2</span></p>
+                <button id="startGameBtn" class="start-btn hidden">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+
+
