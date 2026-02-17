@@ -1,0 +1,1025 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    padding: 20px;
+}
+
+.screen {
+    width: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Login Screen */
+.login-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.login-box h1 {
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.primary-btn, .secondary-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.primary-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.primary-btn:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+    background: #2196F3;
+    color: white;
+}
+
+.secondary-btn:hover {
+    background: #0b7dda;
+    transform: translateY(-2px);
+}
+
+.room-options {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.room-options h3 {
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.room-options label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+    font-size: 0.9em;
+}
+
+.room-options select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    cursor: pointer;
+}
+
+.room-options input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+
+.confirm-btn, .cancel-btn {
+    width: 48%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.confirm-btn {
+    background: #4CAF50;
+    color: white;
+    margin-right: 4%;
+}
+
+.confirm-btn:hover {
+    background: #45a049;
+}
+
+.cancel-btn {
+    background: #ff4444;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #cc0000;
+}
+
+.error {
+    color: #ff6b6b;
+    margin-top: 10px;
+    font-size: 0.9em;
+    padding: 10px;
+    background: rgba(255, 107, 107, 0.2);
+    border-radius: 8px;
+}
+
+/* Game Screen */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+
+.game-info h2 {
+    margin-bottom: 5px;
+}
+
+.game-info p {
+    font-size: 1.1em;
+    color: #ffd700;
+}
+
+.game-info span {
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 1.2em;
+}
+
+.leave-btn {
+    padding: 10px 20px;
+    background: #ff4444;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.leave-btn:hover {
+    background: #cc0000;
+}
+
+/* Poker Table */
+.poker-table {
+    background: rgba(0, 100, 0, 0.8);
+    border-radius: 200px;
+    padding: 40px;
+    position: relative;
+    min-height: 600px;
+    border: 10px solid #8B4513;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* Community Cards */
+.community-cards {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.community-cards h3 {
+    margin-bottom: 15px;
+}
+
+.cards-display {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Card Styling */
+.card {
+    width: 70px;
+    height: 100px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-back {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.card-back::after {
+    content: '🂠';
+}
+
+.card.red {
+    color: #dc143c;
+}
+
+.card.black {
+    color: #000;
+}
+
+/* Pot Display */
+.pot-display {
+    background: rgba(255, 215, 0, 0.3);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* Players Container */
+.players-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.player-box {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.player-box.active {
+    background: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    transform: scale(1.05);
+}
+
+.player-box.folded {
+    opacity: 0.5;
+}
+
+.player-box h4 {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.player-box .chips {
+    color: #ffd700;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.player-box .bet {
+    color: #90EE90;
+    font-size: 0.9em;
+}
+
+.player-box .status {
+    margin-top: 5px;
+    font-size: 0.85em;
+    color: #FFD700;
+}
+
+/* Showdown reveal */
+.player-box .revealed-cards {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.player-box .revealed-cards .mini-card {
+    width: 36px;
+    height: 50px;
+    background: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75em;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    line-height: 1.1;
+    text-align: center;
+    padding: 2px;
+}
+
+.player-box .revealed-cards .mini-card.red { color: #dc143c; }
+.player-box .revealed-cards .mini-card.black { color: #000; }
+
+.player-box .hand-name {
+    margin-top: 6px;
+    font-size: 0.8em;
+    color: #90EE90;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Player Hand */
+.player-hand {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.player-hand h3 {
+    margin-bottom: 15px;
+}
+
+.chips-display {
+    margin-top: 15px;
+    font-size: 1.2em;
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* Action Panel */
+.action-panel {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.bet-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+#betSlider {
+    flex: 1;
+    height: 8px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    outline: none;
+}
+
+#betSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#betSlider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#betAmount {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #ffd700;
+    min-width: 80px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: white;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.fold-btn {
+    background: #ff4444;
+}
+
+.fold-btn:hover {
+    background: #cc0000;
+}
+
+.check-btn {
+    background: #4CAF50;
+}
+
+.check-btn:hover {
+    background: #45a049;
+}
+
+.call-btn {
+    background: #2196F3;
+}
+
+.call-btn:hover {
+    background: #0b7dda;
+}
+
+.raise-btn {
+    background: #ff9800;
+}
+
+.raise-btn:hover {
+    background: #e68900;
+}
+
+/* Info Panels Container */
+.info-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Game Log */
+.game-log {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-log h3 {
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+#logContainer {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.log-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+/* Chat Panel */
+.chat-panel {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+}
+
+.chat-panel h3 {
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    line-height: 1.6;
+    min-height: 0;
+}
+
+.chat-message {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    word-wrap: break-word;
+}
+
+.chat-message:last-child {
+    border-bottom: none;
+}
+
+.chat-message .sender {
+    font-weight: bold;
+    color: #ffd700;
+    margin-right: 5px;
+}
+
+.chat-message .timestamp {
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: 5px;
+}
+
+.chat-message.own-message .sender {
+    color: #4CAF50;
+}
+
+.chat-input-container {
+    display: flex;
+    gap: 10px;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-size: 0.95em;
+}
+
+#chatInput:focus {
+    outline: 2px solid #4CAF50;
+}
+
+.send-chat-btn {
+    padding: 10px 20px;
+    background: #4CAF50;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.send-chat-btn:hover {
+    background: #45a049;
+}
+
+.send-chat-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Waiting Screen */
+.waiting-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 100;
+}
+
+.waiting-screen h2 {
+    margin-bottom: 20px;
+}
+
+.start-btn {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background: #4CAF50;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.start-btn:hover {
+    background: #45a049;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .poker-table {
+        border-radius: 50px;
+        padding: 20px;
+    }
+
+    .card {
+        width: 50px;
+        height: 75px;
+        font-size: 1.2em;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+
+    .players-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .confirm-btn, .cancel-btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .info-panels {
+        grid-template-columns: 1fr;
+    }
+
+    .game-log, .chat-panel {
+        max-height: 250px;
+    }
+}
+
+/* Game winner styles */
+.player-box.game-winner {
+    background: rgba(255, 215, 0, 0.25);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4);
+    border: 2px solid #ffd700;
+    animation: championPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes championPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.7), 0 0 40px rgba(255,215,0,0.3); }
+    50%       { box-shadow: 0 0 40px rgba(255,215,0,1),   0 0 80px rgba(255,215,0,0.6); }
+}
+
+.crown-label {
+    margin-top: 6px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255,215,0,0.9);
+    letter-spacing: 1px;
+}
+
+.broke-label {
+    color: #ff6b6b !important;
+}
+
+.player-hand.game-winner-me {
+    background: rgba(255, 215, 0, 0.15);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.7);
+    animation: championPulse 1.5s ease-in-out infinite;
+}
+
+/* Game Over overlay extras */
+.game-over-screen {
+    min-width: 320px;
+}
+
+.crown-icon {
+    font-size: 4em;
+    margin-bottom: 10px;
+    animation: crownBounce 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes crownBounce {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(-10px) scale(1.1); }
+}
+
+.winner-text {
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.9);
+}
+
+.play-again-btn {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    font-size: 1.1em;
+    padding: 15px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(76,175,80,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.play-again-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(76,175,80,0.6);
+}
+
+/* All-in badge */
+.allin-badge {
+    display: inline-block;
+    margin-top: 5px;
+    background: linear-gradient(135deg, #ff6b00, #ff0000);
+    color: white;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(255,100,0,0.6);
+    animation: allInPulse 1s ease-in-out infinite;
+}
+
+@keyframes allInPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(255,100,0,0.5); }
+    50%       { box-shadow: 0 0 18px rgba(255,100,0,0.9); }
+}
+
+/* Loser badge (post-showdown, chips=0) */
+.loser-badge {
+    display: inline-block;
+    margin-top: 5px;
+    background: linear-gradient(135deg, #444, #222);
+    color: #aaa;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+}
+
+/* Observer badge override — dim the whole box */
+.player-box:has(.status.broke-label) {
+    opacity: 0.6;
+    filter: grayscale(60%);
+}
+
+
+
+/* ===== Global Chat (Home Page) ===== */
+#loginScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 30px 16px;
+}
+
+.global-chat-box {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+}
+
+.global-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #e2c672;
+    letter-spacing: 0.5px;
+}
+
+.online-count {
+    font-size: 0.78rem;
+    color: #5ddd87;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.global-chat-messages {
+    height: 280px;
+    overflow-y: auto;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scroll-behavior: smooth;
+}
+
+.global-chat-messages::-webkit-scrollbar {
+    width: 4px;
+}
+.global-chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+.global-chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+}
+
+.global-msg {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 7px 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    border-left: 3px solid rgba(226, 198, 114, 0.4);
+    transition: background 0.2s;
+}
+
+.global-msg.own-global-msg {
+    border-left-color: #5ddd87;
+    background: rgba(93, 221, 135, 0.07);
+}
+
+.global-msg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.global-msg-sender {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #e2c672;
+}
+
+.global-msg.own-global-msg .global-msg-sender {
+    color: #5ddd87;
+}
+
+.global-msg-time {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.35);
+}
+
+.global-msg-text {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.88);
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.global-chat-empty {
+    text-align: center;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.82rem;
+    margin: auto;
+    padding: 20px 0;
+}
+
+.global-chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+}
+
+#globalChatInput {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: white;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#globalChatInput:focus {
+    border-color: rgba(226, 198, 114, 0.6);
+}
+
+#globalChatInput::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+
+.global-send-btn {
+    background: linear-gradient(135deg, #e2c672, #c9a84c);
+    color: #1a1a2e;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+
+.global-send-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.global-send-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 520px) {
+    .global-chat-box {
+        max-width: 100%;
+    }
+    .global-chat-messages {
+        height: 220px;
+    }
+}
+
+
