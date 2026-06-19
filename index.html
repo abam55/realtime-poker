@@ -3,73 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Poker Game</title>
+    <title>Online Casino</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Login Screen -->
-        <div id="loginScreen" class="screen">
-            <div class="login-box">
-                <h1>🃏 Online Poker</h1>
-                <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
-                
-                <div class="button-group">
-                    <button id="createRoomBtn" class="primary-btn">Create Room</button>
-                    <button id="showJoinBtn" class="secondary-btn">Join Room</button>
-                </div>
-                
-                <!-- Create Room Options -->
-                <div id="createRoomOptions" class="room-options hidden">
-                    <h3>Create New Room</h3>
-                    <label for="maxPlayersSelect">Number of Players:</label>
-                    <select id="maxPlayersSelect">
-                        <option value="2">2 Players</option>
-                        <option value="3">3 Players</option>
-                        <option value="4">4 Players</option>
-                        <option value="5">5 Players</option>
-                        <option value="6">6 Players</option>
-                        <option value="7">7 Players</option>
-                        <option value="8">8 Players</option>
-                    </select>
-                    <button id="confirmCreateBtn" class="confirm-btn">Create Room</button>
-                    <button id="cancelCreateBtn" class="cancel-btn">Cancel</button>
-                </div>
-                
-                <!-- Join Room Options -->
-                <div id="joinRoomOptions" class="room-options hidden">
-                    <h3>Join Existing Room</h3>
-                    <input type="text" id="roomCodeInput" placeholder="Enter 6-digit room code" maxlength="6">
-                    <button id="confirmJoinBtn" class="confirm-btn">Join Room</button>
-                    <button id="cancelJoinBtn" class="cancel-btn">Cancel</button>
-                </div>
-                
-                <div id="loginError" class="error"></div>
-            </div>
+<div class="container">
 
-            <!-- Global Chat -->
-            <div class="global-chat-box">
-                <div class="global-chat-header">
-                    <span>🌐 Global Chat</span>
-                    <span id="globalOnlineCount" class="online-count">● 0 online</span>
+        <!-- ═══════════════════════════════════════════════ -->
+        <!--  AUTH SCREEN (Login / Register)                 -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <div id="authScreen" class="screen">
+            <div class="login-box">
+                <h1>🃏Online Casino</h1>
+                <div class="active-users-badge" id="activeUsersBadge">
+                    <span class="active-dot"></span>
+                    <span id="activeUsersCount">...</span> online
                 </div>
-                <div id="globalChatMessages" class="global-chat-messages"></div>
-                <div class="global-chat-input-row">
-                    <input type="text" id="globalChatInput" placeholder="Say something to everyone..." maxlength="200">
-                    <button id="globalSendBtn" class="global-send-btn">Send</button>
+
+                <!-- Auth Tabs -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="authTabLogin">Login</button>
+                    <button class="auth-tab" id="authTabRegister">Register</button>
                 </div>
+
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <input type="text" id="loginUsername" placeholder="Username" maxlength="10" autocomplete="username">
+                    <input type="password" id="loginPassword" placeholder="Password" maxlength="50" autocomplete="current-password">
+                    <button id="loginBtn" class="primary-btn" style="width:100%;margin-bottom:10px;">Login</button>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" class="hidden">
+                    <input type="text" id="regUsername" placeholder="Choose a username" maxlength="10" autocomplete="username">
+                    <input type="password" id="regPassword" placeholder="Choose a password" maxlength="50" autocomplete="new-password">
+                    <input type="password" id="regPasswordConfirm" placeholder="Confirm password" maxlength="50" autocomplete="new-password">
+                    <button id="registerBtn" class="primary-btn" style="width:100%;margin-bottom:10px;">Create Account</button>
+                </div>
+
+                <div id="authError" class="error hidden"></div>
+
+                <div class="guest-divider">or</div>
+                <button id="guestBtn" class="guest-btn">🎲 Play as Guest</button>
+                <div style="font-size:0.72em;color:rgba(255,255,255,0.28);margin-top:7px;text-align:center;">You'll get a random name · No DMs · Room &amp; global chat work</div>
             </div>
         </div>
 
-        <!-- Game Screen -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <!--  LOGIN SCREEN (Lobby — after auth)              -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <div id="loginScreen" class="screen hidden" style="padding: 20px 10px;">
+            <div style="text-align:center;margin-bottom:18px;">
+                <h1 style="font-size:2.2em;margin-bottom:8px;font-weight:900;letter-spacing:-0.5px;">🃏 Online Casino</h1>
+                <div class="active-users-badge" id="activeUsersBadge2" style="display:inline-flex;">
+                    <span class="active-dot"></span>
+                    <span id="activeUsersCount2">...</span> online
+                </div>
+            </div>
+            <div class="lobby-layout">
+                <!-- Left: Levels Leaderboard -->
+                <div class="lobby-mini-lb">
+                    <h4>⭐ Top Levels</h4>
+                    <div id="lobbyLvlLb"><div class="mini-lb-loading">Loading…</div></div>
+                </div>
+
+                <!-- Center: Main Lobby Controls -->
+                <div class="login-box" style="margin:0;padding:24px 28px;">
+                    <div class="logged-in-badge">
+                        <div class="lobby-user-info">
+                            <span style="opacity:0.6;font-size:0.85em;">👤</span>
+                            <span id="lobbyUsername" style="font-size:1em;"></span>
+                            <span id="guestTag" class="guest-tag hidden">Guest</span>
+                            <span id="lobbyLevelBadge" class="lobby-level-badge"></span>
+                        </div>
+                        <div class="lobby-user-btns">
+                            <button id="changePasswordBtn" class="logout-mini-btn" style="background:rgba(33,150,243,0.25);border-color:rgba(33,150,243,0.5);min-width:90px;" title="Change Password">🔑 Password</button>
+                            <button id="logoutBtn" class="logout-mini-btn" style="min-width:90px;">Logout</button>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="createRoomBtn" class="primary-btn">Create Room</button>
+                        <button id="showJoinBtn" class="secondary-btn">Join Room</button>
+                    </div>
+                    <button id="lobbyDmBtn" class="lobby-dm-btn">💬 Messages <span id="lobbyDmBadge" class="dm-unread hidden"></span></button>
+                    <button id="gameAdminBtn" class="lobby-dm-btn game-admin-lobby-btn hidden">🛡️ Game Admin</button>
+                    <button id="lobbyLbBtn" class="lobby-lb-btn">🏆 Full Leaderboard</button>
+                    <button id="changelogBtn" class="lobby-help-btn" style="margin-top:4px;">📋 Change Log</button>
+                    <button id="lobbyHelpBtn" class="lobby-help-btn">📖 How to Play / Instructions</button>
+
+                <!-- Create Room Options -->
+                <div id="createRoomOptions" class="room-options hidden">
+                    <h3>Create New Room</h3>
+                    <label style="display:block;margin-bottom:6px;font-size:0.9em;">Game Type:</label>
+                    <div class="game-type-toggle" style="display:flex;gap:8px;margin-bottom:14px;">
+                        <button class="game-type-btn active" id="gameTypePoker" data-type="poker">🃏 Texas Hold'em</button>
+                        <button class="game-type-btn" id="gameTypeBlackjack" data-type="blackjack">🎰 Blackjack</button>
+                    </div>
+                    <label for="maxPlayersSelect" style="font-size:0.9em;">Room Size: 8 Players (Fixed)</label>
+                    <select id="maxPlayersSelect" style="display:none;">
+                        <option value="8" selected>8 Players</option>
+                    </select>
+                    <label class="visibility-label">
+                        <span>Room Visibility:</span>
+                        <div class="visibility-toggle">
+                            <button class="vis-btn active" id="visPublicBtn" data-vis="public">🌐 Public</button>
+                            <button class="vis-btn" id="visPrivateBtn" data-vis="private">🔒 Code Only</button>
+                        </div>
+                    </label>
+                    <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+                        <button id="confirmCreateBtn" class="confirm-btn" style="width:100%;margin:0;">Create Room</button>
+                        <button id="cancelCreateBtn" class="cancel-btn" style="width:100%;margin:0;">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Join Room Options -->
+                <div id="joinRoomOptions" class="room-options hidden">
+                    <h3>Join Existing Room</h3>
+                    <div class="join-tabs">
+                        <button class="join-tab" id="joinTabCode">🔑 By Code</button>
+                        <button class="join-tab active" id="joinTabBrowse">🌐 Browse Rooms</button>
+                    </div>
+                    <div id="joinByCode" class="hidden">
+                        <input type="text" id="roomCodeInput" placeholder="Enter 6-digit room code" maxlength="6">
+                        <button id="confirmJoinBtn" class="confirm-btn" style="width:100%;margin-top:4px;">Join Room</button>
+                    </div>
+                    <div id="joinByBrowse">
+                        <div class="room-type-tabs" style="display:flex;gap:4px;margin-bottom:8px;">
+                            <button class="room-type-tab active" id="roomTabPoker" data-type="poker">🃏 Poker</button>
+                            <button class="room-type-tab" id="roomTabBlackjack" data-type="blackjack">🎰 Blackjack</button>
+                        </div>
+                        <div id="publicRoomsList" class="public-rooms-list">
+                            <p class="rooms-loading">Loading rooms...</p>
+                        </div>
+                    </div>
+                    <button id="cancelJoinBtn" class="cancel-btn" style="width:100%;margin-top:8px;">Cancel</button>
+                </div>
+
+                <div id="loginError" class="error hidden"></div>
+                </div><!-- end .login-box (center column) -->
+                <!-- Right: Streaks Leaderboard -->
+                <div class="lobby-mini-lb">
+                    <h4>🔥 Top Streaks</h4>
+                    <div id="lobbyStreakLb"><div class="mini-lb-loading">Loading…</div></div>
+                </div>
+            </div><!-- end .lobby-layout -->
+        </div><!-- end #loginScreen -->
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!--  GAME SCREEN                                    -->
+        <!-- ═══════════════════════════════════════════════ -->
         <div id="gameScreen" class="screen hidden">
             <div class="game-header">
                 <div class="game-info">
-                    <h2>Texas Hold'em Poker</h2>
-                    <p>Room Code: <span id="gameCode"></span></p>
+                    <h2>Texas Hold'em Poker <span id="versionBadge" class="version-badge"></span></h2>
+                    <p>Room Code: <span id="gameCode"></span> <span id="adminBadge" class="admin-badge hidden">👑 Admin</span></p>
+                    <p class="header-online"><span class="active-dot-small"></span> <span id="headerActiveCount">...</span> online</p>
                 </div>
-                <button id="leaveGameBtn" class="leave-btn">Leave Game</button>
+                <div class="header-actions">
+                    <button id="rulesBtn" class="help-btn">📖 Rules</button>
+                    <button id="handsBtn" class="help-btn">🃏 Hands</button>
+                    <button id="bjRulesBtn" class="help-btn hidden">🎰 BJ Rules</button>
+                    <button id="adminPanelBtn" class="help-btn admin-panel-btn hidden">👑 Admin</button>
+                    <button id="gameAdminGameBtn" class="help-btn game-admin-game-btn hidden">🛡️ G.Admin</button>
+                    <button id="dmBtn" class="help-btn dm-btn">💬 DMs <span id="dmUnreadBadge" class="dm-unread hidden"></span></button>
+                    <button id="leaveGameBtn" class="leave-btn">Leave Game</button>
+                </div>
             </div>
+
+            <!-- Poker Rules Modal -->
+            <div id="rulesModal" class="modal-overlay hidden">
+                <div class="modal-box wide-modal">
+                    <div class="modal-header">
+                        <h2>📖 Texas Hold'em Rules</h2>
+                        <button class="modal-close" id="closeRulesBtn">✕</button>
+                    </div>
+                    <div class="modal-body" style="padding:20px 24px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+                            <div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);border-radius:12px;padding:14px;">
+                                <div style="font-weight:bold;color:#81c784;margin-bottom:8px;font-size:1em;">🎯 Objective</div>
+                                <p style="font-size:0.88em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;">Win chips by making the best 5-card hand, or by making all opponents fold before showdown.</p>
+                            </div>
+                            <div style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);border-radius:12px;padding:14px;">
+                                <div style="font-weight:bold;color:#64b5f6;margin-bottom:8px;font-size:1em;">🃏 The Deal</div>
+                                <p style="font-size:0.88em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;">Each player gets <b>2 private cards</b>. Then 5 community cards are revealed: <b>Flop</b> (3), <b>Turn</b> (1), <b>River</b> (1).</p>
+                            </div>
+                            <div style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);border-radius:12px;padding:14px;">
+                                <div style="font-weight:bold;color:#ffb74d;margin-bottom:8px;font-size:1em;">💰 Blinds</div>
+                                <p style="font-size:0.88em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;">Small Blind ($10) and Big Blind ($20) are posted automatically each hand and rotate clockwise.</p>
+                            </div>
+                            <div style="background:rgba(156,39,176,0.1);border:1px solid rgba(156,39,176,0.25);border-radius:12px;padding:14px;">
+                                <div style="font-weight:bold;color:#ce93d8;margin-bottom:8px;font-size:1em;">🏆 Winning</div>
+                                <p style="font-size:0.88em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;">Best hand at showdown wins. Last player standing when all others fold also wins — no cards needed!</p>
+                            </div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:12px;">
+                            <div style="font-weight:bold;color:#fff;margin-bottom:10px;">⚡ Betting Actions</div>
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                                <div style="text-align:center;padding:10px 6px;background:rgba(244,67,54,0.15);border:1px solid rgba(244,67,54,0.3);border-radius:10px;">
+                                    <div style="font-size:1.2em;">🗑️</div>
+                                    <div style="font-weight:bold;color:#ef9a9a;font-size:0.88em;margin:4px 0;">Fold</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);">Give up hand, lose bets</div>
+                                </div>
+                                <div style="text-align:center;padding:10px 6px;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);border-radius:10px;">
+                                    <div style="font-size:1.2em;">✋</div>
+                                    <div style="font-weight:bold;color:#81c784;font-size:0.88em;margin:4px 0;">Check</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);">Pass (if no bet)</div>
+                                </div>
+                                <div style="text-align:center;padding:10px 6px;background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);border-radius:10px;">
+                                    <div style="font-size:1.2em;">📞</div>
+                                    <div style="font-weight:bold;color:#64b5f6;font-size:0.88em;margin:4px 0;">Call</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);">Match current bet</div>
+                                </div>
+                                <div style="text-align:center;padding:10px 6px;background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.3);border-radius:10px;">
+                                    <div style="font-size:1.2em;">📈</div>
+                                    <div style="font-weight:bold;color:#ffb74d;font-size:0.88em;margin:4px 0;">Raise</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);">Increase bet with slider</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
+                            <div style="font-weight:bold;color:#fff;margin-bottom:6px;">💥 All-In</div>
+                            <p style="font-size:0.87em;color:rgba(255,255,255,0.7);line-height:1.6;margin:0;">If you bet all your chips you're all-in — you can still win but can't bet further. If all active players are all-in, the remaining community cards are dealt at once and hands are revealed immediately.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Poker Hands Modal -->
+            <div id="handsModal" class="modal-overlay hidden">
+                <div class="modal-box wide-modal">
+                    <div class="modal-header">
+                        <h2>🃏 Poker Hand Rankings</h2>
+                        <button class="modal-close" id="closeHandsBtn">✕</button>
+                    </div>
+                    <div class="modal-body hands-guide">
+                        <div class="hand-row">
+                            <span class="hand-rank">1</span>
+                            <div class="hand-middle"><span class="hand-name-label">🏆 Royal Flush</span><span class="hand-desc">A, K, Q, J, 10 — all same suit. The unbeatable hand.</span></div>
+                            <span class="hand-example red">A♥ K♥ Q♥ J♥ 10♥</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">2</span>
+                            <div class="hand-middle"><span class="hand-name-label">⚡ Straight Flush</span><span class="hand-desc">Five consecutive cards, same suit.</span></div>
+                            <span class="hand-example red">9♦ 8♦ 7♦ 6♦ 5♦</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">3</span>
+                            <div class="hand-middle"><span class="hand-name-label">💣 Four of a Kind</span><span class="hand-desc">Four cards of the same rank.</span></div>
+                            <span class="hand-example">K♠ K♥ K♦ K♣</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">4</span>
+                            <div class="hand-middle"><span class="hand-name-label">🏠 Full House</span><span class="hand-desc">Three of a kind plus a pair.</span></div>
+                            <span class="hand-example">Q♠ Q♥ Q♦ J♠ J♥</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">5</span>
+                            <div class="hand-middle"><span class="hand-name-label">💧 Flush</span><span class="hand-desc">Any five cards of the same suit (not consecutive).</span></div>
+                            <span class="hand-example red">A♥ J♥ 8♥ 6♥ 2♥</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">6</span>
+                            <div class="hand-middle"><span class="hand-name-label">📈 Straight</span><span class="hand-desc">Five consecutive cards, any suit. Ace can be high or low.</span></div>
+                            <span class="hand-example">10♠ 9♥ 8♦ 7♣ 6♠</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">7</span>
+                            <div class="hand-middle"><span class="hand-name-label">🎯 Three of a Kind</span><span class="hand-desc">Three cards of the same rank.</span></div>
+                            <span class="hand-example">7♠ 7♥ 7♦</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">8</span>
+                            <div class="hand-middle"><span class="hand-name-label">👥 Two Pair</span><span class="hand-desc">Two different pairs. Higher pair wins ties.</span></div>
+                            <span class="hand-example">K♠ K♥ 5♦ 5♣</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">9</span>
+                            <div class="hand-middle"><span class="hand-name-label">🤝 One Pair</span><span class="hand-desc">Two cards of the same rank. Kicker cards decide ties.</span></div>
+                            <span class="hand-example">A♠ A♦</span>
+                        </div>
+                        <div class="hand-row">
+                            <span class="hand-rank">10</span>
+                            <div class="hand-middle"><span class="hand-name-label">🃏 High Card</span><span class="hand-desc">No matching cards. Highest card in your hand wins.</span></div>
+                            <span class="hand-example">A♠ K♦ J♥ 8♣ 3♦</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ ADMIN PANEL MODAL ══ -->
+            <div id="adminPanelModal" class="modal-overlay hidden">
+                <div class="modal-box admin-modal-box">
+                    <div class="modal-header">
+                        <h2>👑 Admin Panel</h2>
+                        <button class="modal-close" id="closeAdminPanelBtn">✕</button>
+                    </div>
+                    <div class="modal-body admin-panel-body">
+                        <!-- Player Management -->
+                        <div class="admin-section">
+                            <h3>👥 Players</h3>
+                            <div id="adminPlayerTable"></div>
+                        </div>
+
+                        <!-- Game Controls -->
+                        <div class="admin-section">
+                            <h3>🎮 Game Controls</h3>
+                            <div class="admin-controls-row">
+                                <button id="adminForceStartBtn" class="admin-ok-btn">▶ Force Start</button>
+                                <button id="adminRestartBtn" class="admin-warn-btn">🔄 Restart (Reset $1000)</button>
+                            </div>
+                            <div class="admin-controls-row" style="margin-top:8px;">
+                                <button id="adminEndRoundBtn" class="admin-warn-btn" style="background:rgba(76,175,80,0.2);border-color:rgba(76,175,80,0.5);color:#81c784;">🏠 End Game → Lobby</button>
+                                <button id="adminEndGameBtn" class="admin-danger-btn">💥 Destroy Room</button>
+                            </div>
+                            <div style="font-size:0.77em;opacity:0.6;margin-top:6px;line-height:1.4;">
+                                <b>End Game → Lobby</b>: Ends game, resets everyone to $1000, keeps room open for new players.<br>
+                                <b>Destroy Room</b>: Permanently deletes the room and kicks everyone.
+                            </div>
+                        </div>
+
+                        <!-- Room Settings -->
+                        <div class="admin-section">
+                            <h3>⚙️ Room Settings</h3>
+                            <div class="admin-vis-row">
+                                <span>Visibility:</span>
+                                <div class="visibility-toggle" style="margin-top:6px;">
+                                    <button class="vis-btn" id="adminVisPublic">🌐 Public</button>
+                                    <button class="vis-btn" id="adminVisPrivate">🔒 Code Only</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ DM PANEL MODAL (game screen) — actual modal element lives at body level below ══ -->
 
             <div class="poker-table">
                 <!-- Community Cards -->
@@ -88,13 +357,11 @@
                 </div>
 
                 <!-- Players Display -->
-                <div id="playersContainer" class="players-container">
-                    <!-- Players will be dynamically added here -->
-                </div>
+                <div id="playersContainer" class="players-container"></div>
 
                 <!-- Current Player's Hand -->
                 <div class="player-hand">
-                    <h3>Your Hand</h3>
+                    <h3>Your Hand <button id="peekToggleBtn" title="Toggle card hiding (classroom mode)" style="background:none;border:1px solid rgba(255,255,255,0.25);border-radius:6px;color:rgba(255,255,255,0.6);font-size:0.65em;padding:2px 7px;cursor:pointer;margin-left:8px;vertical-align:middle;">👁 Hide</button></h3>
                     <div id="playerCards" class="cards-display">
                         <div class="card card-back"></div>
                         <div class="card card-back"></div>
@@ -106,9 +373,20 @@
 
                 <!-- Action Panel -->
                 <div id="actionPanel" class="action-panel hidden">
+                    <!-- Turn Timer -->
+                    <div id="turnTimerWrap" class="turn-timer-wrap hidden">
+                        <div class="turn-timer-meta">
+                            <span class="turn-timer-text">⏱ Your turn</span>
+                            <span id="turnTimerLabel" class="turn-timer-count">15s</span>
+                        </div>
+                        <div class="turn-timer-track">
+                            <div id="turnTimerBar" class="turn-timer-bar"></div>
+                        </div>
+                    </div>
                     <div class="bet-controls">
-                        <input type="range" id="betSlider" min="0" max="1000" value="0" step="10">
-                        <span id="betAmount">$0</span>
+                        <input type="range" id="betSlider" min="0" max="1000" value="0" step="5">
+                        <input type="number" id="betInput" min="0" max="1000" value="0" step="5"
+                            style="width:72px;padding:4px 6px;border-radius:8px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.35);color:#ffd700;font-size:1.1em;font-weight:bold;text-align:center;outline:none;-moz-appearance:textfield;">
                     </div>
                     <div class="action-buttons">
                         <button id="foldBtn" class="action-btn fold-btn">Fold</button>
@@ -116,23 +394,219 @@
                         <button id="callBtn" class="action-btn call-btn">Call $<span id="callAmount">0</span></button>
                         <button id="raiseBtn" class="action-btn raise-btn">Raise</button>
                     </div>
+                    <!-- sitOutBtn rendered separately below action panel so it's always visible -->
+                </div>
+
+                <!-- Sitting Out Panel (wake up) -->
+                <div id="sittingOutPanel" class="action-panel hidden" style="text-align:center;">
+                    <div style="font-size:1.5em; margin-bottom:8px;">💤</div>
+                    <div style="font-size:1.1em; margin-bottom:4px; font-weight:bold;">You are sitting out</div>
+                    <div id="sittingOutReason" style="font-size:0.9em; opacity:0.7; margin-bottom:12px;">Click below to rejoin when the current hand ends.</div>
+                    <button id="wakeUpBtn" class="wake-up-btn">☀️ Return to Game (next hand)</button>
+                </div>
+
+                <!-- Persistent sit-out toggle — visible at all times during a game -->
+                <div id="sitOutBtnWrap" class="hidden" style="text-align:center; margin-top:8px;">
+                    <button id="sitOutBtn" class="sitout-toggle-btn" title="Sit out from next hand onwards">💤 Sit Out Next Hand</button>
                 </div>
             </div>
 
-            <!-- Game Log and Chat Side by Side -->
-            <div class="info-panels">
-                <!-- Game Log -->
-                <div class="game-log">
-                    <h3>Game Log</h3>
-                    <div id="logContainer"></div>
+            <!-- Blackjack Rules Modal -->
+            <div id="bjRulesModal" class="modal-overlay hidden">
+                <div class="modal-box wide-modal">
+                    <div class="modal-header">
+                        <h2>🎰 Blackjack Rules</h2>
+                        <button class="modal-close" id="closeBjRulesBtn">✕</button>
+                    </div>
+                    <div class="modal-body" style="padding:20px 24px;">
+                        <!-- Objective + Card Values -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                            <div style="background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.25);border-radius:12px;padding:13px;">
+                                <div style="font-weight:bold;color:#81c784;margin-bottom:7px;font-size:0.95em;">🎯 Objective</div>
+                                <p style="font-size:0.85em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;">Beat the dealer by getting closer to <strong>21</strong> without going over. You play against the dealer only — other players don't affect your hand.</p>
+                            </div>
+                            <div style="background:rgba(33,150,243,0.1);border:1px solid rgba(33,150,243,0.25);border-radius:12px;padding:13px;">
+                                <div style="font-weight:bold;color:#64b5f6;margin-bottom:7px;font-size:0.95em;">🃏 Card Values</div>
+                                <p style="font-size:0.85em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;"><strong>2 – 10</strong> = face value<br><strong>J, Q, K</strong> = 10<br><strong>Ace</strong> = 11 or 1 (auto, whichever avoids bust)</p>
+                            </div>
+                        </div>
+                        <!-- Betting + Payouts -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                            <div style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.25);border-radius:12px;padding:13px;">
+                                <div style="font-weight:bold;color:#ffb74d;margin-bottom:7px;font-size:0.95em;">💰 Betting</div>
+                                <p style="font-size:0.85em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;">Bet <strong>before</strong> each hand. <strong>Min: $5 — Max: half your chips.</strong> You have 20 seconds to bet; timeout auto-places the minimum.</p>
+                            </div>
+                            <div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:12px;padding:13px;">
+                                <div style="font-weight:bold;color:#ffd700;margin-bottom:7px;font-size:0.95em;">🏆 Payouts</div>
+                                <p style="font-size:0.85em;color:rgba(255,255,255,0.8);line-height:1.6;margin:0;"><strong style="color:#ffd700;">Blackjack</strong> (Ace + 10) → <strong>+150%</strong><br><strong>Win</strong> → <strong>+100%</strong> (1:1)<br><strong>Push (tie)</strong> → bet returned<br><strong>Lose / Bust</strong> → bet lost</p>
+                            </div>
+                        </div>
+                        <!-- Actions grid -->
+                        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:13px;margin-bottom:12px;">
+                            <div style="font-weight:bold;color:#fff;margin-bottom:10px;font-size:0.95em;">⚡ Player Actions</div>
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                                <div style="text-align:center;padding:10px 6px;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);border-radius:10px;">
+                                    <div style="font-size:1.3em;">🃏</div>
+                                    <div style="font-weight:bold;color:#81c784;font-size:0.85em;margin:5px 0 3px;">Hit</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);line-height:1.4;">Take another card</div>
+                                </div>
+                                <div style="text-align:center;padding:10px 6px;background:rgba(33,150,243,0.15);border:1px solid rgba(33,150,243,0.3);border-radius:10px;">
+                                    <div style="font-size:1.3em;">✋</div>
+                                    <div style="font-weight:bold;color:#64b5f6;font-size:0.85em;margin:5px 0 3px;">Stand</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);line-height:1.4;">Keep current hand, end turn</div>
+                                </div>
+                                <div style="text-align:center;padding:10px 6px;background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.3);border-radius:10px;">
+                                    <div style="font-size:1.3em;">×2</div>
+                                    <div style="font-weight:bold;color:#ffb74d;font-size:0.85em;margin:5px 0 3px;">Double Down</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);line-height:1.4;">Double bet, receive exactly one card. First 2 cards only.</div>
+                                </div>
+                                <div style="text-align:center;padding:10px 6px;background:rgba(156,39,176,0.15);border:1px solid rgba(156,39,176,0.3);border-radius:10px;">
+                                    <div style="font-size:1.3em;">✂️</div>
+                                    <div style="font-weight:bold;color:#ce93d8;font-size:0.85em;margin:5px 0 3px;">Split</div>
+                                    <div style="font-size:0.75em;color:rgba(255,255,255,0.5);line-height:1.4;">Pair only. Creates 2 hands, doubles your bet. No re-split.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Dealer rules -->
+                        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:13px;margin-bottom:12px;">
+                            <div style="font-weight:bold;color:#fff;margin-bottom:8px;font-size:0.95em;">🤖 Dealer Rules</div>
+                            <p style="font-size:0.85em;color:rgba(255,255,255,0.75);line-height:1.7;margin:0;">
+                                • Dealer's second card is <strong>hidden</strong> until all players finish.<br>
+                                • Dealer <strong>must hit on 16 or below</strong> and on <strong>Soft 17</strong> (Ace + 6).<br>
+                                • Dealer <strong>stands on hard 17 or above</strong>.<br>
+                                • If the dealer busts, all non-busted players win.<br>
+                                • <strong>Equal totals = dealer wins</strong> — ties go to the house. Only Blackjack vs Blackjack is a push.
+                            </p>
+                        </div>
+                        <!-- Tips -->
+                        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:12px 14px;">
+                            <div style="font-weight:bold;color:#ffd700;margin-bottom:7px;font-size:0.9em;">💡 Quick Tips</div>
+                            <p style="font-size:0.83em;color:rgba(255,255,255,0.65);line-height:1.7;margin:0;">
+                                • <strong>Blackjack</strong> = Ace + any 10-value card on first two cards only.<br>
+                                • <strong>Split Aces</strong> get only one card each — no further hits.<br>
+                                • A Blackjack on a split hand pays <strong>1:1</strong> (not 3:2) — it's just a 21.<br>
+                                • Winning hands count toward your <strong>level XP</strong> — beat the dealer to level up faster!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ══ BLACKJACK TABLE — mirrors poker table structure ══ -->
+            <div id="bjTable" class="poker-table hidden" style="min-height:unset;position:relative;">
+
+                <!-- BJ Waiting Lobby Overlay (shown before first hand starts) -->
+                <div id="bjWaitingLobby" class="hidden" style="position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;border-radius:inherit;">
+                    <div style="background:rgba(0,0,0,0.88);border-radius:20px;padding:36px 40px;text-align:center;width:90%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,0.6);">
+                        <h2 style="margin-bottom:14px;font-size:1.6em;">Waiting for players...</h2>
+                        <p style="margin-bottom:16px;font-size:1em;opacity:0.8;">Players: <span id="bjLobbyPlayerCount" style="font-weight:bold;color:#ffd700;">1/8</span></p>
+                        <div id="bjAdminPlayerList" class="admin-player-list hidden" style="margin:0 auto 16px;width:100%;max-width:100%;text-align:left;"></div>
+                        <button id="bjStartGameBtn" class="start-btn hidden" style="margin-top:0;width:100%;font-size:1.1em;">▶ Start Game</button>
+                        <p id="bjLobbyHint" style="font-size:0.88em;opacity:0.6;margin-top:12px;margin-bottom:0;"></p>
+                    </div>
                 </div>
 
-                <!-- Chat Panel -->
+                <!-- Dealer Hand (mirrors Community Cards section) -->
+                <div id="bjGameArea">
+                <div class="community-cards">
+                    <h3>🎰 Blackjack <span id="bjRoundLabel" style="font-size:0.7em;opacity:0.65;font-weight:normal;"></span></h3>
+                    <div style="font-size:0.88em;opacity:0.65;margin-bottom:8px;">Dealer's Hand</div>
+                    <div id="bjDealerCards" class="cards-display"></div>
+                    <div id="bjDealerScore" style="font-size:0.95em;color:#ffd700;font-weight:bold;margin-top:6px;min-height:1.2em;"></div>
+                    <div class="pot-display" style="margin-top:12px;">
+                        Bets: $<span id="bjPotAmount">0</span>
+                    </div>
+                </div>
+
+                <!-- Other Players (mirrors playersContainer) -->
+                <div id="bjPlayersContainer" class="players-container"></div>
+
+                <!-- Your Hand (mirrors player-hand section) -->
+                <div class="player-hand" id="bjPlayerHandSection">
+                    <h3>Your Hand</h3>
+                    <div id="bjPlayerCards" class="cards-display"></div>
+                    <div id="bjPlayerScore" style="font-size:1em;color:#ffd700;font-weight:bold;margin-top:4px;min-height:1.3em;"></div>
+                    <div class="chips-display">
+                        Your Chips: $<span id="bjPlayerChips">1000</span>
+                    </div>
+                </div>
+
+                <!-- BJ Bet Phase Panel (mirrors actionPanel) -->
+                <div id="bjBetPanel" class="action-panel hidden">
+                    <div id="bjBetTimerWrap" class="turn-timer-wrap hidden">
+                        <div class="turn-timer-meta">
+                            <span class="turn-timer-text">⏳ Time to place bet</span>
+                            <span id="bjBetTimerLabel" class="turn-timer-count">20s</span>
+                        </div>
+                        <div class="turn-timer-track">
+                            <div id="bjBetTimerBar" class="turn-timer-bar"></div>
+                        </div>
+                    </div>
+                    <div class="bet-controls">
+                        <input type="range" id="bjBetSlider" min="5" max="500" value="20" step="5">
+                        <input type="number" id="bjBetInput" min="5" max="500" value="20" step="5"
+                            style="width:72px;padding:4px 6px;border-radius:8px;border:1px solid rgba(255,215,0,0.4);background:rgba(0,0,0,0.35);color:#ffd700;font-size:1.1em;font-weight:bold;text-align:center;outline:none;-moz-appearance:textfield;">
+                    </div>
+                    <div class="action-buttons">
+                        <button id="bjBetBtn" class="action-btn check-btn">Place Bet $<span id="bjBetDisplay">20</span></button>
+                        <button id="bjSitOutRoundBtn" class="action-btn fold-btn" style="background:rgba(100,100,100,0.5);">Skip Round</button>
+                    </div>
+                </div>
+
+                <!-- BJ Action Panel (mirrors actionPanel) -->
+                <div id="bjActionPanel" class="action-panel hidden">
+                    <div id="bjTurnTimerWrap" class="turn-timer-wrap hidden">
+                        <div class="turn-timer-meta">
+                            <span class="turn-timer-text">⏱ Your turn</span>
+                            <span id="bjTurnTimerLabel" class="turn-timer-count">20s</span>
+                        </div>
+                        <div class="turn-timer-track">
+                            <div id="bjTurnTimerBar" class="turn-timer-bar"></div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="bjHitBtn"    class="action-btn check-btn">Hit 🃏</button>
+                        <button id="bjStandBtn"  class="action-btn call-btn">Stand ✋</button>
+                        <button id="bjDoubleBtn" class="action-btn raise-btn">Double Down ×2</button>
+                        <button id="bjSplitBtn"  class="action-btn" style="background:linear-gradient(135deg,#7b1fa2,#9c27b0);">Split ✂️</button>
+                    </div>
+                </div>
+
+                <!-- BJ Sitting Out Panel (mirrors sittingOutPanel) -->
+                <div id="bjSittingOutPanel" class="action-panel hidden" style="text-align:center;">
+                    <div id="bjSittingOutIcon" style="font-size:1.5em;margin-bottom:8px;">💤</div>
+                    <div id="bjSittingOutTitle" style="font-size:1.1em;margin-bottom:4px;font-weight:bold;">You are sitting out</div>
+                    <div id="bjSittingOutReason" style="font-size:0.9em;opacity:0.7;margin-bottom:12px;">Click below to rejoin from the next hand.</div>
+                    <button id="bjWakeUpBtn" class="wake-up-btn">☀️ Return to Game (next hand)</button>
+                </div>
+
+                <!-- BJ Wait Panel -->
+                <div id="bjWaitPanel" class="action-panel hidden" style="text-align:center;">
+                    <div id="bjWaitMsg" style="font-size:1em;opacity:0.8;">Waiting...</div>
+                </div>
+
+                <!-- BJ Sit Out Next Hand toggle (mirrors sitOutBtnWrap) -->
+                <div id="bjSitOutBtnWrap" class="hidden" style="text-align:center;margin-top:8px;">
+                    <button id="bjSitOutBtn" class="sitout-toggle-btn" title="Sit out from next hand onwards">💤 Sit Out Next Hand</button>
+                </div>
+                </div><!-- end #bjGameArea -->
+            </div>
+
+            <!-- Chat Panel (full width, 3 tabs: Room / Global / Game Log) -->
+            <div class="info-panels" style="grid-template-columns:1fr;">
                 <div class="chat-panel">
-                    <h3>Chat</h3>
+                    <div class="chat-tabs">
+                        <button class="chat-tab active" id="tabRoom" data-tab="room">🏠 Room</button>
+                        <button class="chat-tab" id="tabGlobal" data-tab="global">🌍 Global</button>
+                        <button class="chat-tab" id="tabLog" data-tab="log">📋 Game Log</button>
+                        <button id="muteRoomChatBtn" title="Mute room chat" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:0.95em;opacity:0.55;padding:0 6px;" >🔔</button>
+                        <button id="muteGlobalChatBtn" title="Mute global chat" style="background:none;border:none;cursor:pointer;font-size:0.95em;opacity:0.55;padding:0 6px;display:none;" >🔔</button>
+                        <button id="chatFilterBtn" class="chat-filter-btn filter-on" title="Profanity filter ON — click to toggle">🔤</button>
+                    </div>
                     <div id="chatContainer" class="chat-messages"></div>
+                    <div id="globalChatContainer" class="chat-messages hidden"></div>
+                    <div id="logContainer" class="chat-messages hidden" style="font-size:0.88em;line-height:1.6;"></div>
                     <div class="chat-input-container">
-                        <input type="text" id="chatInput" placeholder="Type a message..." maxlength="200">
+                        <input type="text" id="chatInput" placeholder="Type a message... (:fire: :joy: :crown: :100: :sob: etc)" maxlength="200">
                         <button id="sendChatBtn" class="send-chat-btn">Send</button>
                     </div>
                 </div>
@@ -142,17 +616,422 @@
             <div id="waitingScreen" class="waiting-screen">
                 <h2>Waiting for players...</h2>
                 <p>Players: <span id="playerCount">1/2</span></p>
+                <div id="adminPlayerList" class="admin-player-list hidden"></div>
                 <button id="startGameBtn" class="start-btn hidden">Start Game</button>
             </div>
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         ONBOARDING MODAL — shown to new users on first registration
+    ═══════════════════════════════════════════════════════════════ -->
+    <div id="onboardingModal" class="modal-overlay hidden" style="z-index:10000;">
+        <div class="modal-box onboarding-modal-box">
+            <div class="modal-header">
+                <h2 id="onboardingTitle">🃏 Welcome to Poker!</h2>
+                <!-- No close button — must complete -->
+            </div>
+            <div class="modal-body">
+                <div class="onboarding-progress">
+                    <div class="onboarding-dot active" id="odot0"></div>
+                    <div class="onboarding-dot" id="odot1"></div>
+                    <div class="onboarding-dot" id="odot2"></div>
+                </div>
+
+                <!-- Step 0: How to Play -->
+                <div class="onboarding-step active" id="ostep0">
+                    <h3 style="color:#ffd700;margin-bottom:12px;">📖 How Texas Hold'em Works</h3>
+                    <p style="font-size:0.92em;line-height:1.7;color:rgba(255,255,255,0.85);margin-bottom:12px;">
+                        Each player gets <strong>2 private cards</strong>. Then 5 community cards are revealed in stages: the <strong>Flop</strong> (3 cards), <strong>Turn</strong> (1), and <strong>River</strong> (1). Make the best 5-card hand from your 2 cards + any of the 5 community cards.
+                    </p>
+                    <p style="font-size:0.88em;line-height:1.6;color:rgba(255,255,255,0.7);margin-bottom:14px;">
+                        <strong style="color:#fff;">Blinds:</strong> Small Blind ($10) + Big Blind ($20) are posted automatically each hand. Action starts left of the Big Blind.<br><br>
+                        <strong style="color:#fff;">Actions:</strong> <span style="color:#4CAF50;">Check</span> (pass if no bet) · <span style="color:#2196F3;">Call</span> (match bet) · <span style="color:#ff9800;">Raise</span> (increase bet) · <span style="color:#f44336;">Fold</span> (give up hand)<br><br>
+                        <strong style="color:#fff;">Win by:</strong> Having the best hand at showdown, or making everyone else fold.
+                    </p>
+                    <h3 style="color:#ffd700;margin-bottom:10px;">🏆 Hand Rankings (Best → Worst)</h3>
+                    <div class="onboarding-hand-grid">
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">👑</div><div><div class="onboarding-hand-label">Royal Flush</div><div class="onboarding-hand-desc">A K Q J 10 same suit</div></div></div>
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">⚡</div><div><div class="onboarding-hand-label">Straight Flush</div><div class="onboarding-hand-desc">5 consecutive, same suit</div></div></div>
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">💣</div><div><div class="onboarding-hand-label">Four of a Kind</div><div class="onboarding-hand-desc">4 cards same rank</div></div></div>
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">🏠</div><div><div class="onboarding-hand-label">Full House</div><div class="onboarding-hand-desc">3 of a kind + pair</div></div></div>
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">💧</div><div><div class="onboarding-hand-label">Flush</div><div class="onboarding-hand-desc">Any 5 same suit</div></div></div>
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">📈</div><div><div class="onboarding-hand-label">Straight</div><div class="onboarding-hand-desc">5 consecutive cards</div></div></div>
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">🎯</div><div><div class="onboarding-hand-label">Three of a Kind</div><div class="onboarding-hand-desc">3 cards same rank</div></div></div>
+                        <div class="onboarding-hand-item"><div class="onboarding-hand-rank">👥</div><div><div class="onboarding-hand-label">Two Pair → Pair → High Card</div><div class="onboarding-hand-desc">Lower-ranked hands</div></div></div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Features -->
+                <div class="onboarding-step" id="ostep1">
+                    <h3 style="color:#ffd700;margin-bottom:14px;">⚙️ Game Features Overview</h3>
+                    <div class="onboarding-feature-grid">
+                        <div class="onboarding-feature-card">
+                            <div class="onboarding-feature-icon">💤</div>
+                            <div class="onboarding-feature-title">Sit Out</div>
+                            <div class="onboarding-feature-text">Press the "Sit Out" button to skip future hands without leaving. You stay in the room and can watch. Press "Return to Game" to rejoin from the next hand.</div>
+                        </div>
+                        <div class="onboarding-feature-card">
+                            <div class="onboarding-feature-icon">👀</div>
+                            <div class="onboarding-feature-title">Spectating</div>
+                            <div class="onboarding-feature-text">If you're out of chips or sitting out, you'll observe the game. You can still chat and watch all cards being played.</div>
+                        </div>
+                        <div class="onboarding-feature-card">
+                            <div class="onboarding-feature-icon">💬</div>
+                            <div class="onboarding-feature-title">Chat</div>
+                            <div class="onboarding-feature-text">Room Chat is just your table. Global Chat reaches all players on the server. Use :emoji: shortcuts like :fire: 🔥, :joy: 😂, :crown: 👑, :100: 💯, :wilted_flower: 🥀, :skull: 💀 — 900+ emojis supported!</div>
+                        </div>
+                        <div class="onboarding-feature-card">
+                            <div class="onboarding-feature-icon">👑</div>
+                            <div class="onboarding-feature-title">Admin Roles</div>
+                            <div class="onboarding-feature-text">Room Admin can kick players, restart, and control the room. Game Admins are server-wide moderators. You can message any player via 💬 DMs.</div>
+                        </div>
+                        <div class="onboarding-feature-card">
+                            <div class="onboarding-feature-icon">⏱️</div>
+                            <div class="onboarding-feature-title">Turn Timer</div>
+                            <div class="onboarding-feature-text">You have 15 seconds per turn. If you time out with a bet to call, you auto-fold. If no bet, you auto-check. 2 consecutive timeouts (check or fold) = sat out.</div>
+                        </div>
+                        <div class="onboarding-feature-card">
+                            <div class="onboarding-feature-icon">🏆</div>
+                            <div class="onboarding-feature-title">Leaderboards</div>
+                            <div class="onboarding-feature-text">Track your activity streak (consecutive days played) and total rounds played. Visit the Leaderboard from the lobby to see rankings.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: You're ready -->
+                <div class="onboarding-step" id="ostep2">
+                    <div style="text-align:center; padding: 20px 0;">
+                        <div style="font-size: 3.5em; margin-bottom:16px;">🃏</div>
+                        <h3 style="color:#ffd700; font-size:1.4em; margin-bottom:12px;">You're all set!</h3>
+                        <p style="font-size:0.95em; line-height:1.7; color:rgba(255,255,255,0.8); max-width:400px; margin:0 auto 16px;">
+                            Create or join a room to start playing. You start with <strong>$1,000 chips</strong>. Good luck at the table!
+                        </p>
+                        <p style="font-size:0.82em; color:rgba(255,255,255,0.45); margin-top:8px;">
+                            You can always re-read the rules via 📖 Rules and 🃏 Hands buttons in-game.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="onboarding-nav">
+                    <button id="onboardingSkipBtn" class="onboarding-skip-btn" style="display:none;">Skip intro</button>
+                    <button id="onboardingNextBtn" class="onboarding-next-btn">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CHANGE LOG MODAL
+    ═══════════════════════════════════════════════════════════ -->
+    <div id="changelogModal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:560px;">
+            <div class="modal-header">
+                <h2>📋 Change Log</h2>
+                <button class="modal-close" id="closeChangelogBtn">✕</button>
+            </div>
+            <div class="modal-body" style="padding:20px 24px;">
+                <!-- v4.5 (latest) -->
+                <div style="margin-bottom:22px;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <span style="background:rgba(76,175,80,0.25);border:1px solid rgba(76,175,80,0.5);border-radius:10px;padding:3px 12px;font-weight:bold;color:#7ee87e;font-size:0.9em;">v4.5</span>
+                        <span style="font-size:0.8em;opacity:0.5;">Latest</span>
+                    </div>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;">
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🎰</span> — <strong>Blackjack is here!</strong> Create or join a Blackjack room from the lobby — play standard casino rules vs the dealer with up to 8 players, betting phase, Hit / Stand / Double Down, and 3:2 Blackjack payouts</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔄</span> — Blackjack hands auto-restart between rounds — no manual reset needed</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">⏱️</span> — Blackjack has a 20s betting timer and a 20s turn timer — timeout auto-places minimum bet or auto-stands</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">💤</span> — Skip Round button lets you sit out a single Blackjack hand without leaving the room</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔘</span> — Bet slider in Blackjack now matches the Poker slider exactly — same large green draggable thumb</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed dealer turn stalling when all players stood or busted</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed game breaking when all players skipped a round</li>
+                    </ul>
+                </div>
+                <!-- v4.4 -->
+                <div style="margin-bottom:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <span style="background:rgba(33,150,243,0.25);border:1px solid rgba(33,150,243,0.5);border-radius:10px;padding:3px 12px;font-weight:bold;color:#90caf9;font-size:0.9em;">v4.4</span>
+                    </div>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;">
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed critical action button glitch — Check/Fold/Raise buttons could get stuck after clicking, leaving the player unable to act for the rest of the round</li>
+                    </ul>
+                </div>
+                <!-- v4.3 -->
+                <div style="margin-bottom:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <span style="background:rgba(33,150,243,0.25);border:1px solid rgba(33,150,243,0.5);border-radius:10px;padding:3px 12px;font-weight:bold;color:#90caf9;font-size:0.9em;">v4.3</span>
+                    </div>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;">
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">👁</span> — Cards are hidden by default — hold <strong>SPACE</strong> to peek (great for classrooms)</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🎰</span> — Bet slider now typable — click the number and type any amount directly</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">💵</span> — Minimum bet now $5 — slider snaps to $5 increments (no more $1–$4 bets)</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔘</span> — Bet slider thumb made larger for easier dragging</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🚪</span> — Empty rooms now close immediately when all players leave — no more ghost rooms in the browser</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔒</span> — All new joiners must now be admitted by the admin — no more sneaking in mid-hand</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">💬</span> — Deleting a DM or group chat now hides it from your list (iMessage-style) — reappears when someone messages</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🌍</span> — Fixed global room chat not showing history or showing wrong timestamps</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">👑</span> — Fixed winner crown not showing when all other players go bankrupt simultaneously</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">💰</span> — Fixed inflated pot bug — only the room admin auto-starts next hand, preventing double blind posting</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">💤</span> — Fixed AFK sit-out triggering after 1 timeout instead of 2 consecutive timeouts</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🎲</span> — Guest login — play without an account and get a random Xbox-style name (e.g. FluffyGorilla14). Guests can chat in rooms and global chat but can't DM or appear on leaderboards</li>
+                    </ul>
+                </div>
+                <!-- v4.2 -->
+                <div style="margin-bottom:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <span style="background:rgba(33,150,243,0.25);border:1px solid rgba(33,150,243,0.5);border-radius:10px;padding:3px 12px;font-weight:bold;color:#90caf9;font-size:0.9em;">v4.2</span>
+                    </div>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;">
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🏅</span> — Added leveling system — earn levels based on rounds played (easier early, harder later)</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">📊</span> — Lobby now shows live Level leaderboard (left) and Streak leaderboard (right)</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔮</span> — Full leaderboard updated to display levels instead of raw rounds</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed global chat showing messages twice on initial login</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed action menu (bet/check/fold) briefly disappearing at the start of new betting rounds</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed pot distribution glitch — players can no longer win more chips than are in the pot</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed timer for other players sometimes freezing mid-round</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed action buttons disappearing at the start of new betting rounds (flop/turn/river) for the first player to act</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed admitted players breaking the round they first joined — now always queued 2 rounds ahead</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed random disconnects in poker rooms</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed action button disappearing/flickering when a player acts</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed game getting stuck on round winner screen when a player leaves</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">✨</span> — Group chats: create and chat in groups from the DM panel</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">✨</span> — Chat notifications for DMs, group chats, room chat, and global chat (with mute toggle 🔔)</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">✨</span> — Admins can sit players out from the admin panel (one-way; player can return themselves)</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">✨</span> — Admitted players are now always forced as spectators until the next round starts</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">✨</span> — AFK auto-sit-out now triggers after 2 consecutive timeout folds (was 3)</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">✨</span> — Admins can now sit out or return individual players from the admin panel</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">⏱️</span> — Turn timer reduced to 15 seconds</li>
+                    </ul>
+                </div>
+                <!-- v4.1 -->
+                <div style="margin-bottom:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <span style="background:rgba(33,150,243,0.25);border:1px solid rgba(33,150,243,0.5);border-radius:10px;padding:3px 12px;font-weight:bold;color:#90caf9;font-size:0.9em;">v4.1</span>
+                    </div>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;">
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">✨</span> — Improved Change Password menu UI with proper padding and layout</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🎨</span> — Change Password and Log Out buttons are now the same size</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔒</span> — Usernames are now limited to 10 characters maximum</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🚪</span> — Updated Join Room flow: browse rooms first, then confirm with code</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">📋</span> — Added this Change Log section</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🐛</span> — Fixed infinite money glitch for solo players in a room</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.85);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔧</span> — Fixed Google Sites freezing: improved listener cleanup on room leave</li>
+                    </ul>
+                </div>
+                <!-- v4.0 -->
+                <div style="margin-bottom:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <span style="background:rgba(33,150,243,0.25);border:1px solid rgba(33,150,243,0.5);border-radius:10px;padding:3px 12px;font-weight:bold;color:#90caf9;font-size:0.9em;">v4.0</span>
+                    </div>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;">
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🔑</span> — Full Auth system: username/password accounts, login persistence</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">👑</span> — Admin Panel: kick, promote, visibility controls, force start</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">💬</span> — Direct Messaging (DMs) between all registered players</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🌍</span> — Global Chat widget on lobby screen</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">💤</span> — Sit-out mode: skip hands without leaving the room</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">⏱️</span> — Turn timer with auto-fold/check on timeout</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🏆</span> — Leaderboards for activity streak and rounds played</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🌐</span> — Public/private room visibility toggle</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">🛡️</span> — Game Admin system with ban, chat moderation, and account management</li>
+                        <li style="font-size:0.9em;color:rgba(255,255,255,0.75);padding-left:22px;position:relative;line-height:1.5;"><span style="position:absolute;left:0;">📖</span> — Onboarding tutorial for new players</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LEADERBOARD MODAL
+    ═══════════════════════════════════════════════════════════════ -->
+    <div id="leaderboardModal" class="modal-overlay hidden">
+        <div class="modal-box leaderboard-modal-box">
+            <div class="modal-header">
+                <h2>🏆 Leaderboards</h2>
+                <button class="modal-close" id="closeLeaderboardBtn">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="leaderboard-tabs">
+                    <button class="lb-tab active" id="lbTabStreak" data-lb="streak">🔥 Activity Streak</button>
+                    <button class="lb-tab" id="lbTabRounds" data-lb="rounds">🏅 Player Levels</button>
+                </div>
+                <div id="lbContent">
+                    <div class="lb-loading">Loading leaderboard...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Chat Widget (visible on lobby screen) -->
+    <div id="globalChatWidget" class="global-chat-widget hidden">
+        <div class="gcw-header" id="gcwToggle">
+            <span>🌍 Global Chat</span>
+            <span class="gcw-toggle-icon" id="gcwIcon">▲</span>
+            <span class="gcw-unread hidden" id="gcwUnread"></span>
+            <!-- Filter toggle — sits in header, separate click so it doesn't collapse widget -->
+            <button id="gcwFilterBtn" title="Profanity filter ON — click to toggle"
+                style="background:none;border:none;cursor:pointer;font-size:0.95em;opacity:0.7;padding:0 4px 0 6px;line-height:1;flex-shrink:0;"
+                onclick="event.stopPropagation(); toggleChatFilter();">🔤</button>
+        </div>
+        <div class="gcw-body" id="gcwBody">
+            <div class="gcw-messages" id="gcwMessages"></div>
+            <div class="gcw-input-row">
+                <input type="text" id="gcwInput" placeholder="Chat with everyone..." maxlength="200">
+                <button id="gcwSendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         SHARED DM MODAL — works from lobby AND game screen
+    ═══════════════════════════════════════════════════════ -->
+    <div id="dmModal" class="modal-overlay hidden">
+        <div class="modal-box dm-modal-box">
+            <div class="modal-header">
+                <h2>💬 Direct Messages</h2>
+                <button class="modal-close" id="closeDmBtn">✕</button>
+            </div>
+            <div class="dm-layout">
+
+                <!-- LEFT: sidebar tabs — Chats / Players -->
+                <div class="dm-sidebar">
+                    <div class="dm-sidebar-tabs">
+                        <button class="dm-side-tab active" id="dmTabChats">💬 Chats</button>
+                        <button class="dm-side-tab" id="dmTabGroups">👥 Groups</button>
+                        <button class="dm-side-tab" id="dmTabPlayers">🔍 Players</button>
+                    </div>
+
+                    <!-- Conversations list -->
+                    <div id="dmConversationsList" class="dm-conversations dm-panel"></div>
+
+                    <!-- Group chats list -->
+                    <div id="dmGroupsList" class="dm-conversations dm-panel hidden">
+                        <div style="padding:10px 12px;">
+                            <button id="createGroupBtn" style="width:100%;padding:8px;background:rgba(76,175,80,0.2);border:1px solid rgba(76,175,80,0.4);border-radius:8px;color:#81c784;font-size:0.85em;cursor:pointer;">➕ New Group Chat</button>
+                        </div>
+                        <div id="dmGroupsInner"></div>
+                    </div>
+
+                    <!-- All registered players list -->
+                    <div id="dmPlayersList" class="dm-conversations dm-panel hidden">
+                        <div class="dm-players-search-wrap">
+                            <input type="text" id="dmPlayersSearch" placeholder="Search players..." maxlength="20">
+                        </div>
+                        <div id="dmPlayersInner"></div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: chat area -->
+                <div class="dm-chat-area">
+                    <div class="dm-chat-header" id="dmChatHeader">
+                        <span id="dmChatHeaderName">Select a conversation</span>
+                        <div style="display:flex;align-items:center;gap:4px;margin-left:auto;">
+                            <button id="dmAddMemberBtn" title="Add member to group" style="display:none;background:none;border:none;cursor:pointer;font-size:1em;opacity:0.55;padding:0 4px;" >➕</button>
+                            <button id="dmDeleteChatBtn" title="Delete chat history" style="display:none;background:none;border:none;cursor:pointer;font-size:1em;opacity:0.55;padding:0 4px;" >🗑️</button>
+                            <button id="dmMuteBtn" title="Toggle chat notifications" style="background:none;border:none;cursor:pointer;font-size:1.1em;opacity:0.6;padding:0 4px;" >🔔</button>
+                        </div>
+                    </div>
+                    <div id="dmMessages" class="dm-messages">
+                        <div class="dm-empty-state" id="dmEmptyState">
+                            <div class="dm-empty-icon">💬</div>
+                            <p>Pick a player from the Players tab to start chatting</p>
+                        </div>
+                    </div>
+                    <div class="dm-input-row hidden" id="dmInputRow">
+                        <input type="text" id="dmMessageInput" placeholder="Type a message..." maxlength="500">
+                        <button id="dmSendBtn">Send</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GAME ADMIN MODAL — global admin powers
+    ═══════════════════════════════════════════════════════ -->
+    <!-- Change Password Modal (v4.0) -->
+    <div id="changePasswordModal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-width:440px;">
+            <div class="modal-header">
+                <h2>🔑 Change Password</h2>
+                <button class="modal-close" id="changePwCloseBtn">✕</button>
+            </div>
+            <div class="modal-body" style="padding:28px 32px;">
+                <div id="changePwError" style="color:#ff6b6b;font-size:0.9em;margin-bottom:14px;min-height:18px;background:rgba(255,107,107,0.1);border-radius:8px;padding:8px 12px;display:none;"></div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:0.85em;opacity:0.7;margin-bottom:6px;">Current Password</label>
+                    <input type="password" id="changePwCurrent" placeholder="Enter current password" style="width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:1em;box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-size:0.85em;opacity:0.7;margin-bottom:6px;">New Password <span style="opacity:0.5;font-size:0.9em;">(min 4 characters)</span></label>
+                    <input type="password" id="changePwNew" placeholder="Enter new password" style="width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:1em;box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:24px;">
+                    <label style="display:block;font-size:0.85em;opacity:0.7;margin-bottom:6px;">Confirm New Password</label>
+                    <input type="password" id="changePwConfirm" placeholder="Confirm new password" style="width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:1em;box-sizing:border-box;">
+                </div>
+                <div style="display:flex;gap:12px;">
+                    <button id="changePwSubmitBtn" class="primary-btn" style="flex:1;padding:13px;">Update Password</button>
+                    <button id="changePwCancelBtn" class="secondary-btn" style="flex:1;padding:13px;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameAdminModal" class="modal-overlay hidden">
+        <div class="modal-box game-admin-modal-box">
+            <div class="modal-header">
+                <h2>🛡️ Game Admin Panel</h2>
+                <button class="modal-close" id="closeGameAdminBtn">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="ga-search-row">
+                    <input type="text" id="gaSearchInput" placeholder="Search username..." maxlength="20">
+                    <button id="gaSearchBtn" class="confirm-btn">Search</button>
+                </div>
+                <div id="gaResults"></div>
+                <div class="admin-section" style="margin-top:16px;">
+                    <h3>📋 Active Chat Bans</h3>
+                    <div id="gaBanList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         CUSTOM ALERT / CONFIRM MODALS
+         (replaces native alert/confirm which are
+          blocked in Google Sites sandboxed iframes)
+    ═══════════════════════════════════════════ -->
+    <div id="customAlertOverlay" class="custom-modal-overlay hidden">
+        <div class="custom-modal-box">
+            <div id="customAlertIcon" class="custom-modal-icon"></div>
+            <div id="customAlertMsg" class="custom-modal-msg"></div>
+            <div class="custom-modal-btns">
+                <button id="customAlertOk" class="primary-btn" style="min-width:100px;">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customConfirmOverlay" class="custom-modal-overlay hidden">
+        <div class="custom-modal-box">
+            <div id="customConfirmIcon" class="custom-modal-icon"></div>
+            <div id="customConfirmMsg" class="custom-modal-msg"></div>
+            <div class="custom-modal-btns">
+                <button id="customConfirmNo"  class="cancel-btn"  style="min-width:100px;">Cancel</button>
+                <button id="customConfirmYes" class="confirm-btn" style="min-width:100px;">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Watchdog status (debug) -->
+    <div id="watchdogIndicator"></div>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     
     <script src="script.js"></script>
 </body>
 </html>
-
-

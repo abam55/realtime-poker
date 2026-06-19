@@ -1,12 +1,12 @@
-# Realtime Poker
+# Realtime Poker / Online Casino
 
-Browser-based Texas Hold'em with multiplayer rooms, real-time sync, and hand evaluation. Built with vanilla HTML/CSS/JS and Firebase Realtime Database.
+Browser-based multiplayer casino with Texas Hold'em and Blackjack. Built with vanilla HTML, CSS, and JavaScript, synced via Firebase Realtime Database.
 
 ## Features
 
-- Create or join rooms (2–5 players)
-- Blinds, betting rounds, and automatic hand resolution
-- Live game state synced across clients
+- Account login, guest play, and lobby with public room browser
+- Texas Hold'em (8-player rooms) and Blackjack vs the dealer
+- Real-time chat (room, global, DMs, group chats), leaderboards, and admin tools
 - Responsive table UI
 
 ## Run locally
@@ -23,7 +23,7 @@ Firebase config is in `script.js`. Replace it with your own Firebase project cre
 
 ```
 index.html   — layout and screens
-styles.css   — table and UI styling
-script.js    — game logic, Firebase sync, hand evaluation
+styles.css   — UI styling
+script.js    — game logic, Firebase sync, auth, chat, blackjack engine
 LICENSE.md
 ```
